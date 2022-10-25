@@ -1,6 +1,6 @@
 # Convex-NN-Training
 
-**Unofficial implementation of the method introduced in the paper [1]. Also used as a baseline in the papers [2, 3].**
+**An unofficial implementation of the method introduced in the paper [1]. Also used as a baseline in the papers [2, 3].** Requires NumPy and CvxPy. The MOSEK solver is recommended.
 
 [1]. [Neural Networks are Convex Regularizers: Exact Polynomial-time Convex Optimization Formulations for Two-layer Networks](http://proceedings.mlr.press/v119/pilanci20a.html). Mert Pilanci, Tolga Ergen. Proceedings of the 37th International Conference on Machine Learning, 2020.
 
