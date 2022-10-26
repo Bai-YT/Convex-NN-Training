@@ -5,6 +5,7 @@
 
 
 import numpy as np
+from numpy.linalg import norm
 from numpy.random import randn
 import cvxpy as cp
 import mosek
@@ -59,7 +60,14 @@ def generate_D(X, P, v=-1, w=-1, verbose=False):
     return dmat, n, d, dmat.shape[1], v, w
 
 
-def recover_weights(v, w, verbose=False):  # Recover u, alpha from v, w
+def recover_weights(v, w, verbose=False):
+    """
+    Recovers u, alpha from v, w.
+    :param v: The first set of optimizers returned by CVX.
+    :param w: The second set of optimizers returned by CVX.
+    :param verbose: if True, print u and alpha.
+    :return: u and alpha, where u and alpha are the first and second layer weights.
+    """
     alpha1 = np.sqrt(norm(v, 2, axis=0))
     mask1 = alpha1 != 0
     u1 = v[:, mask1] / alpha1[mask1]
