@@ -59,6 +59,21 @@ def generate_D(X, P, v=-1, w=-1, verbose=False):
     return dmat, n, d, dmat.shape[1], v, w
 
 
+def recover_weights(v, w, verbose=False):  # Recover u, alpha from v, w
+    alpha1 = np.sqrt(norm(v, 2, axis=0))
+    mask1 = alpha1 != 0
+    u1 = v[:, mask1] / alpha1[mask1]
+    alpha2 = -np.sqrt(norm(w, 2, axis=0))
+    mask2 = alpha2 != 0
+    u2 = -w[:, mask2] / alpha2[mask2]
+    u = np.append(u1, u2, axis=1)
+    alpha = np.append(alpha1[mask1], alpha2[mask2])
+
+    if verbose:
+        print(u, alpha)
+    return u, alpha
+
+
 def nnfit_cvx(X, y, P, beta=1e-4, dmat=-1, solver=cp.MOSEK, loss_type='mse', verbose=True):
     """
     Performs convex training of one-hidden-layer neural networks.
@@ -103,12 +118,7 @@ def nnfit_cvx(X, y, P, beta=1e-4, dmat=-1, solver=cp.MOSEK, loss_type='mse', ver
 
     print('Solving CVX problem...')
     prob = cp.Problem(cp.Minimize(cost), constraints)
-    if solver is cp.MOSEK:
-        prob.solve(solver=solver, verbose=verbose, mosek_params={mosek.dparam.intpnt_co_tol_mu_red: 5e-14,
-                                                                 mosek.dparam.intpnt_co_tol_rel_gap: 5e-14,
-                                                                 mosek.dparam.intpnt_co_tol_infeas: 1e-14})
-    else:
-        prob.solve(solver=solver, verbose=verbose)
+    prob.solve(solver=solver, verbose=verbose)
 
     print("\nTotal cost: ", prob.value)
     return uopt1.value, uopt2.value, prob.value, dmat
